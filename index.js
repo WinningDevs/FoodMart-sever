@@ -29,7 +29,7 @@ async function run() {
     await client.connect();
     console.log("database connected");
     const database = client.db('foodmart_shop');
-    const productCollection = database.collection('products')
+    const productCollection = database.collection('productsNew')
     const blogCollection = database.collection('blogs')
 
     const commentCollection = database.collection('comments')
