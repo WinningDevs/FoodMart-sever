@@ -1,11 +1,20 @@
 const express = require('express')
 const { MongoClient } = require('mongodb');
+const ObjectId = require('mongodb').ObjectId
 const app = express()
 const cors = require('cors');
 require('dotenv').config()
+const fileUpload = require("express-fileUpload")
+
+
+
 const port = process.env.PORT || 5000;
 
 app.use(cors());
+app.use(fileUpload());
+app.use(express());
+
+
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.ernrq.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
 
