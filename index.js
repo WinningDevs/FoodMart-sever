@@ -28,7 +28,11 @@ async function run(){
     const database = client.db('foodmart_shop');
     const productCollection = database.collection('products')
     const blogCollection = database.collection('blogs')
+
+    const commentCollection = database.collection('comments')
     const reviewCollection = database.collection('reviews')
+    const addblogCollection = database.collection('add_blog')
+    const vendorsCollection = database.collection('vendors')
 
 
     app.get('/products', async (req, res) => {
@@ -36,6 +40,36 @@ async function run(){
       const products = await cursor.toArray();
       res.send(products);
   })
+
+
+    app.post('/products', async (req, res) => {
+      const productTitle = req.body.productTitle;
+      const productCategory = req.body.productCategory;
+      const productPrice = req.body.productPrice;
+      const productStock = req.body.productStock;
+      const productVendor = req.body.productVendor;
+      const productDetails = req.body.productDetails;
+      const productImage = req.files.productImage
+      const productImageData = productImage.data
+      const encodedProductImage = productImageData.toString('base64')
+      const imageBuffer = Buffer.from(encodedProductImage, 'base64')
+
+      const product = {
+        productTitle,
+        productCategory,
+        productPrice,
+        productPrice,
+        productStock,
+        productVendor,
+        productDetails,
+        productImage: imageBuffer
+      }
+      const result = await productCollection.insertOne(product)
+      res.json(result)
+    })
+
+
+
     app.get('/blogs', async (req, res) => {
       const cursor = blogCollection.find({})
       const blogs = await cursor.toArray();
