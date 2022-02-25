@@ -20,7 +20,10 @@ const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster
 
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
-async function run(){
+console.log(uri)
+
+
+async function run() {
 
   try {
     await client.connect();
@@ -34,14 +37,14 @@ async function run(){
     const addblogCollection = database.collection('add_blog')
     const vendorsCollection = database.collection('vendors')
 
-
+    // get products
     app.get('/products', async (req, res) => {
       const cursor = productCollection.find({})
       const products = await cursor.toArray();
       res.send(products);
-  })
+    })
 
-
+    //add products
     app.post('/products', async (req, res) => {
       const productTitle = req.body.productTitle;
       const productCategory = req.body.productCategory;
@@ -70,18 +73,125 @@ async function run(){
 
 
 
+
+    // get blog
     app.get('/blogs', async (req, res) => {
       const cursor = blogCollection.find({})
       const blogs = await cursor.toArray();
       res.send(blogs);
-  })
+    })
+
+
+
+
+    // add blog 
+    app.post('/addBlog', async (req, res) => {
+      const blogTitle = req.body.blogTitle;
+      const blogCategory = req.body.blogCategory;
+      const blogThumb = req.body.blogThumb;
+      const blogTag = req.body.blogTag;
+      const blogDescription = req.body.blogDescription;
+      const authorName = req.body.authorName;
+      const photoUrl = req.body.photoUrl;
+
+      const addBlog = {
+        blogTitle,
+        blogCategory,
+        blogThumb,
+        blogTag,
+        blogDescription,
+        authorName,
+        photoUrl
+      }
+      const result = await addblogCollection.insertOne(addBlog)
+      res.json(result)
+    })
+
+
+
+
+    // comment get api 
+    app.get('/comments', async (req, res) => {
+      const cursor = commentCollection.find({})
+      const comments = await cursor.toArray();
+      res.send(comments);
+    })
+
+
+    // Add comment 
+    app.post('/comments', async (req, res) => {
+      const userName = req.body.userName;
+      const userEmail = req.body.userEmail;
+      const userComment = req.body.userComment;
+
+      const commentss = {
+        userName,
+        userEmail,
+        userComment
+
+      }
+      const result = await commentCollection.insertOne(commentss)
+      res.json(result)
+    })
+
+
+
+
+
+    // get review
+
     app.get('/reviews', async (req, res) => {
       const cursor = reviewCollection.find({})
       const reviews = await cursor.toArray();
       res.send(reviews);
-  })
+    })
 
-  } 
+    // add review 
+    app.post('/reviews', async (req, res) => {
+      const userName = req.body.userName;
+      const userEmail = req.body.userEmail;
+      const reviewDate = req.body.reviewDate;
+      const reviewTime = req.body.reviewTime;
+      const description = req.body.description;
+      const imgUrl = req.body.imgUrl;
+
+      const review = {
+        userName,
+        userEmail,
+        reviewDate,
+        reviewTime,
+        description,
+        imgUrl
+      }
+      const result = await reviewCollection.insertOne(review)
+      res.json(result)
+    })
+
+
+
+
+    // DELETE
+    app.delete('/products/:id', async (req, res) => {
+      const id = req.params.id
+      const query = { _id: ObjectId(id) }
+      const result = await productCollection.deleteOne(query)
+      res.json(result)
+    })
+
+
+
+
+    // get vendors
+    app.get('/vendors', async (req, res) => {
+      const cursor = vendorsCollection.find({})
+      const vendors = await cursor.toArray();
+      res.send(vendors);
+    })
+
+
+
+
+  }
   finally {
     // await client.close();
   }
