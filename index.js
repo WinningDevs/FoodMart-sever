@@ -11,8 +11,8 @@ const fileUpload = require("express-fileUpload")
 const port = process.env.PORT || 5000;
 
 app.use(cors());
-app.use(fileUpload());
-app.use(express());
+// app.use(fileUpload());
+// app.use(express());
 
 
 
